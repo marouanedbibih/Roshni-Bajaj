@@ -124,6 +124,7 @@ export default function UserForm() {
                     setUser({ ...user, last_name: ev.target.value })
                   }
                   placeholder="Last Name"
+                  className="mb-4"
                 />
                 <input
                   value={user.first_name}
@@ -131,6 +132,8 @@ export default function UserForm() {
                     setUser({ ...user, first_name: ev.target.value })
                   }
                   placeholder="First Name"
+                  className="mb-4"
+
                 />
                 <input
                   value={user.email}
@@ -138,10 +141,14 @@ export default function UserForm() {
                     setUser({ ...user, email: ev.target.value })
                   }
                   placeholder="Email"
+                  className="mb-4"
+
                 />
                 <select
                   value={user.role}
                   onChange={(ev) => setUser({ ...user, role: ev.target.value })}
+                  className="mb-4"
+
                 >
                   <option value="">Select Role</option>
                   <option value="1">Admin</option>
@@ -155,6 +162,8 @@ export default function UserForm() {
                     setUser({ ...user, password: ev.target.value })
                   }
                   placeholder="Password"
+                  className="mb-4"
+
                 />
                 <input
                   type="password"
@@ -162,6 +171,8 @@ export default function UserForm() {
                     setUser({ ...user, password_confirmation: ev.target.value })
                   }
                   placeholder="Password Confirmation"
+                  className="mb-4"
+
                 />
               </div>
               <div className="flex justify-center items-center">
