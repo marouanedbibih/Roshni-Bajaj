@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import image from "../users/default-profile.png";
+import image from "../../../public/img/default-profile.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
 import KeyValueInputForm from "../../components/Input/KeyValueInputForm";

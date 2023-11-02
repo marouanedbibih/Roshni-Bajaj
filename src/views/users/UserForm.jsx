@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axios.js";
 import { useStateContext } from "../../contexts/ContextProvider.jsx";
-import image from "../users/default-profile.png";
+import image from "../../../public/img/default-profile.png";
 
 export default function UserForm() {
   const navigate = useNavigate();
