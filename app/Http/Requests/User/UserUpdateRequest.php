@@ -50,8 +50,8 @@ class UserUpdateRequest extends FormRequest
                     ->numbers()
                     ->symbols()
             ],
-            'role' => 'required|in:0,1',
-            'image' => 'nullable|string',
+            'role' => 'required|in:0,1,2',
+            // 'image' => 'nullable|string',
         ];
     }
 

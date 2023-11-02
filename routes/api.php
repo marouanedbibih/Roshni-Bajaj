@@ -45,8 +45,6 @@ Route::middleware(['auth:sanctum', 'checkUserRole:1,2'])->group(function () {
     Route::post('/customers/export', [CustomerController::class,'exportCustomer']);
     Route::get('/search-customers', [CustomerController::class,'searchCustomers']);
 
-
-
 });
 Route::middleware(['auth:sanctum', 'checkUserRole:1'])->group(function () {
     Route::apiResource('/users',UserController::class);

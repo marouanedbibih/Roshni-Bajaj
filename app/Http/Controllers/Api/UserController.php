@@ -39,14 +39,14 @@ class UserController extends Controller
     {
         $data = $request->validated();
         // Check if image was given and save on local file system
-        if (isset($data['image'])) {
-            $relativePath = $this->imageController->uploadImage($data['image'], 'images/users/', '-user');
-            $data['image'] = $relativePath;
-        }else{
-            $data['image'] = "images/users/default-profile.png";
+        // if (isset($data['image'])) {
+        //     $relativePath = $this->imageController->uploadImage($data['image'], 'images/users/', '-user');
+        //     $data['image'] = $relativePath;
+        // }else{
+        //     $data['image'] = "images/users/default-profile.png";
 
             
-        }
+        // }
         /** @var \App\Models\User $user */
         $user = User::create($data);
         return response([
@@ -73,12 +73,12 @@ class UserController extends Controller
             $data['password'] = bcrypt($data['password']);
         }
         // Check if image was given and save on local file system
-        if (isset($data['image'])) {
-            $relativePath = $this->imageController->uploadImage($data['image'],'images/users/','-user');
-            $data['image'] = $relativePath;
+        // if (isset($data['image'])) {
+        //     $relativePath = $this->imageController->uploadImage($data['image'],'images/users/','-user');
+        //     $data['image'] = $relativePath;
 
-            $this->imageController->removeImage($user->image);
-        }
+        //     $this->imageController->removeImage($user->image);
+        // }
         /** @var \App\Models\User $user */
         $user->update($data);
         return response([
