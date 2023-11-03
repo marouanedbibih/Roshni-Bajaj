@@ -39,10 +39,10 @@ class UserUpdateRequest extends FormRequest
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('users')->ignore($userId), // Ignore the current user's email
+                Rule::unique('users')->ignore($userId), 
             ],
             'password' => [
-                'nullable', // Allow password to be nullable for updates
+                'nullable', 
                 'string',
                 'confirmed',
                 Password::min(8)
@@ -51,7 +51,6 @@ class UserUpdateRequest extends FormRequest
                     ->symbols()
             ],
             'role' => 'required|in:0,1,2',
-            // 'image' => 'nullable|string',
         ];
     }
 

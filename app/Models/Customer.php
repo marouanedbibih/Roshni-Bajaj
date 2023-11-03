@@ -20,10 +20,7 @@ class Customer extends Model
         'country',
         'state',
         'city',
-        'code_postal',
-        'company',
         'job',
-        'image',
     ];
 
     public function emails(){
@@ -35,9 +32,9 @@ class Customer extends Model
         return $this->hasMany(Phone::class);
     }
 
-    public function addresses()
+    public function descriptions()
     {
-        return $this->hasMany(Adresse::class);
+        return $this->hasMany(Description::class);
     }
 }
 

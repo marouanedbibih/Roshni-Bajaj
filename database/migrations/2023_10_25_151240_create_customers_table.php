@@ -19,10 +19,7 @@ return new class extends Migration
             $table->string('country', 255);
             $table->string('state', 255);
             $table->string('city', 255);
-            $table->string('code_postal')->nullable()->default(null);
-            $table->string('company')->nullable();
             $table->string('job')->nullable();
-            $table->text('image')->nullable();
             $table->timestamps(); // Add this line
 
             // $table->engine = 'InnoDB';

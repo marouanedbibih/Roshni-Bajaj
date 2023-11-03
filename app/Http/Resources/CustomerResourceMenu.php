@@ -16,7 +16,7 @@ class CustomerResourceMenu extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image' => $this->image,
+            // 'image' => $this->image,
             'name' => $this->name,
             'created_at' => $this->created_at,
             'country' => $this->country,

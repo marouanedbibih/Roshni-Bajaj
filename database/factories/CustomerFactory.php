@@ -28,10 +28,7 @@ class CustomerFactory extends Factory
             'country' => $this->faker->country(),
             'state' => $this->faker->state(),
             'city' => $this->faker->city(),
-            'code_postal' => $this->faker->postcode(),
-            'company' => $this->faker->company(),
             'job' => $this->faker->jobTitle(),
-            'image' => $this->faker->imageUrl(),
         ];
     }
 }

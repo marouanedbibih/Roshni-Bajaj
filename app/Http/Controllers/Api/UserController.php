@@ -23,12 +23,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        // Get users with specified columns, order by 'created_at' in descending order, and paginate with 7 items per page
-        $users = User::select('id', 'last_name', 'first_name', 'email', 'image', 'created_at')
+        $users = User::select('id', 'last_name', 'first_name', 'email', 'created_at')
             ->orderBy('created_at', 'desc')
             ->paginate(7);
-
-        // Return the users as a UserResource collection
         return UserResource::collection($users);
     }
 
@@ -38,15 +35,6 @@ class UserController extends Controller
     public function store(UserStoreRequest $request)
     {
         $data = $request->validated();
-        // Check if image was given and save on local file system
-        // if (isset($data['image'])) {
-        //     $relativePath = $this->imageController->uploadImage($data['image'], 'images/users/', '-user');
-        //     $data['image'] = $relativePath;
-        // }else{
-        //     $data['image'] = "images/users/default-profile.png";
-
-            
-        // }
         /** @var \App\Models\User $user */
         $user = User::create($data);
         return response([
@@ -72,13 +60,6 @@ class UserController extends Controller
         if (isset($data['password'])) {
             $data['password'] = bcrypt($data['password']);
         }
-        // Check if image was given and save on local file system
-        // if (isset($data['image'])) {
-        //     $relativePath = $this->imageController->uploadImage($data['image'],'images/users/','-user');
-        //     $data['image'] = $relativePath;
-
-        //     $this->imageController->removeImage($user->image);
-        // }
         /** @var \App\Models\User $user */
         $user->update($data);
         return response([
@@ -92,7 +73,6 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $this->imageController->removeImage($user->image);
         $user->delete();
         return response([
             "message" => "user delete succufuly"

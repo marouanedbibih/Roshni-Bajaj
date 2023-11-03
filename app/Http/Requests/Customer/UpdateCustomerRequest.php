@@ -37,15 +37,12 @@ class UpdateCustomerRequest extends FormRequest
                 'max:255',
                 Rule::unique('customers', 'name')->ignore($customerId),
             ],
-            'infos.birth_day' => 'required|date',
-            'infos.birth_place' => 'required|string|max:255',
-            'infos.country' => 'required|string|max:255',
-            'infos.state' => 'required|string|max:255',
-            'infos.city' => 'required|string|max:255',
-            'infos.code_postal' => 'required|string|max:255',
-            'infos.company' => 'required|string|max:255',
-            'infos.job' => 'required|string|max:255',
-            'infos.image' => 'string',  // You may want to validate the image format and size here
+            'infos.birth_day' => 'nullable|date',
+            'infos.birth_place' => 'nullable|string|max:255',
+            'infos.country' => 'nullable|string|max:255',
+            'infos.state' => 'nullable|string|max:255',
+            'infos.city' => 'nullable|string|max:255',
+            'infos.job' => 'nullable|string|max:255',
     
             'emails' => [
                 'required',
@@ -69,16 +66,14 @@ class UpdateCustomerRequest extends FormRequest
                 new UpdateUniqueEmail($customerId, $this->input('phones.*.id'), $this->input('phones'))
             
             ],
-            'adresses' => [
-                'required',
+            'dscriptions' => [
+                'nullable',
                 'array',
             ],
-            'adresses.*.id' => 'integer|nullable', // Ensure 'id' is an integer
-            'adresses.*.key' => 'string|max:255',
-            'adresses.*.value' => [
-                'string',
-                // new UpdateUniquePhone($customerId, $this->input('phones.*.id'))
-            
+            'descriptions.*.id' => 'integer|nullable', // Ensure 'id' is an integer
+            'descriptions.*.key' => 'string|max:255',
+            'descriptions.*.value' => [
+                'string',            
             ],
         ];
     }

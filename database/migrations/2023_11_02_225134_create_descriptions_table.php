@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('adresses', function (Blueprint $table) {
+        Schema::create('descriptions', function (Blueprint $table) {
             $table->id();
-            $table->string('key', 100);
-            $table->string('value',255); // Adjust the length as needed
+            $table->string('key', 100); // Add title column
+            $table->text('value'); // Use the "text" data type for an unlimited length description
             $table->unsignedBigInteger('customer_id'); // Use unsignedBigInteger for foreign keys
             $table->timestamps();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('adresses');
+        Schema::dropIfExists('descriptions');
     }
 };

@@ -2,34 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Exports\CustomerExport;
-use App\Http\Controllers\Contact\EmailController;
-use App\Http\Requests\Phone\UpdatePhoneRequest;
 use App\Http\Resources\CustomerResourceMenu;
 use Illuminate\Support\Facades\DB;
 
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Tools\ImageController;
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
-use App\Http\Requests\Email\UpdateEmailRequest; // Import the UpdateEmailRequest
 use App\Http\Resources\CustomerResource;
-use App\Models\Adresse;
 use App\Models\Customer;
-use App\Models\Email;
-use App\Models\Phone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CustomerExport;
 
 class CustomerController extends Controller
 {
-    protected $imageController;
-    public function __construct(ImageController $imageController)
-    {
-        $this->imageController = $imageController;
-    }
     /**
      * Display a listing of the resource.
      */
@@ -43,10 +31,7 @@ class CustomerController extends Controller
         'country',
         'state',
         'city',
-        'code_postal',
-        'company',
         'job',
-        'image',
         'created_at'
         )->get();
         $customers = CustomerResource::collection($data);
@@ -64,20 +49,10 @@ class CustomerController extends Controller
         $infosData = $data['infos'];
         $emailsData = $data['emails'];
         $phonesData = $data['phones'];
-        $adressesData = $data['adresses'];
-    
-        // Check if image was given and save it
-        if (isset($infosData['image'])) {
-            $relativePath = $this->imageController->uploadImage($infosData['image'], 'images/customers/', '-customer');
-            $infosData['image'] = $relativePath;
-        } else {
-            $infosData['image'] = "images/customers/default-profile.png";
-        }
-    
-        // Create the customer
+        $descriptionsData = $data['descriptions'];
+
         $customer = Customer::create($infosData);
     
-        // Store emails, phones, and addresses
         foreach ($emailsData as $emailData) {
             $customer->emails()->create($emailData);
         }
@@ -86,8 +61,8 @@ class CustomerController extends Controller
             $customer->phones()->create($phoneData);
         }
     
-        foreach ($adressesData as $addressData) {
-            $customer->addresses()->create($addressData);
+        foreach ($descriptionsData as $descriptionData) {
+            $customer->descriptions()->create($descriptionData);
         }
     
         return response(['customer' => $customer], 201); // Return the created customer with a 201 status code
@@ -102,13 +77,13 @@ class CustomerController extends Controller
         $infos = new CustomerResource($customer);
         $emails = $customer->emails()->get(['id','key','value']);
         $phones = $customer->phones()->get(['id','key','value']);
-        $adresses = $customer->addresses()->get(['id','key','value']);
+        $descriptions = $customer->descriptions()->get(['id','key','value']);
 
         return response([
             'infos' => $infos,
             'emails' => $emails,
             'phones' => $phones,
-            'adresses' => $adresses
+            'descriptions' => $descriptions
         ]);
     }
 
@@ -121,16 +96,8 @@ class CustomerController extends Controller
         $infosData = $data['infos'];
         $emailsData = $data['emails'];
         $phonesData = $data['phones'];
-        $adressesData = $data['adresses'];
-    
-        // Check if a new image is provided and update/remove the old one
-        if (isset($infosData['image'])) {
-            $this->imageController->removeImage($customer->image);
-            $relativePath = $this->imageController->uploadImage($infosData['image'], 'images/customers/', '-customer');
-            $infosData['image'] = $relativePath;
-        }
-    
-        // Update customer's information
+        $descriptionsData = $data['descriptions'];
+
         $customer->update($infosData);
     
         // Update or create emails
@@ -166,17 +133,17 @@ class CustomerController extends Controller
         }
     
         // Update or create addresses
-        $updatedAdresses = [];
-        foreach ($adressesData as $adresseData) {
-            if (isset($adresseData['id'])) {
-                $adress = $customer->addresses()->find($adresseData['id']);
-                if ($adress) {
-                    $adress->update($adresseData);
-                    $updatedAddresses[] = $adress;
+        $updatedDescriptions = [];
+        foreach ($descriptionsData as $descriptionData) {
+            if (isset($descriptionData['id'])) {
+                $description = $customer->descriptions()->find($descriptionData['id']);
+                if ($description) {
+                    $description->update($descriptionData);
+                    $updatedAddresses[] = $description;
                 }
                 else{
-                    $adresse = $customer->addresses()->create($adresseData);
-                    $updatedAdresses[] = $adress;
+                    $description = $customer->descriptions()->create($descriptionData);
+                    $updatedAdresses[] = $description;
                 }
             }
         }
@@ -186,14 +153,12 @@ class CustomerController extends Controller
             'customer' => $customer->fresh(), // Refresh the customer model to get the updated data
             'updatedEmails' => $updatedEmails,
             'updatedPhones' => $updatedPhones,
-            'updatedAddresses' => $updatedAddresses,
+            'updatedDescriptions' => $updatedDescriptions,
         ];
     
         return response($response);
     }
     
-
-
     /**
      * Remove the specified resource from storage.
      */
@@ -214,16 +179,15 @@ class CustomerController extends Controller
             })
             ->select(
                 'customers.id',
-                'customers.image',
                 'customers.name',
                 'customers.created_at',
                 'customers.country',
                 'customers.birth_day',
                 'customers.birth_place',
-                DB::raw('MIN(emails.value) as email'), // Get the first email
-                DB::raw('MIN(phones.value) as phone')  // Get the first phone number
+                DB::raw('MAX(emails.value) as email'), // Get the first email
+                DB::raw('MAX(phones.value) as phone')  // Get the first phone number
             )
-            ->groupBy('customers.id', 'customers.image', 'customers.name', 'customers.created_at', 'customers.country', 'customers.birth_day', 'customers.birth_place')
+            ->groupBy('customers.id', 'customers.name', 'customers.created_at', 'customers.country', 'customers.birth_day', 'customers.birth_place')
             ->orderBy('customers.id', 'desc') // Corrected order column
             ->paginate(7);
     
@@ -251,10 +215,9 @@ public function searchCustomers(Request $request)
     $customers = DB::table('customers')
         ->leftJoin('emails', 'customers.id', '=', 'emails.customer_id')
         ->leftJoin('phones', 'customers.id', '=', 'phones.customer_id')
-        ->leftJoin('adresses', 'customers.id', '=', 'adresses.customer_id')
+        ->leftJoin('descriptions', 'customers.id', '=', 'descriptions.customer_id')
         ->select(
             'customers.id',
-            'customers.image',
             'customers.name',
             'customers.created_at',
             'customers.country',
@@ -269,17 +232,17 @@ public function searchCustomers(Request $request)
                 ->orWhere('customers.country', 'like', "%$searchTerm%")
                 ->orWhere('customers.state', 'like', "%$searchTerm%")
                 ->orWhere('customers.city', 'like', "%$searchTerm%")
-                ->orWhere('customers.code_postal', 'like', "%$searchTerm%")
-                ->orWhere('customers.company', 'like', "%$searchTerm%")
+                // ->orWhere('customers.code_postal', 'like', "%$searchTerm%")
+                // ->orWhere('customers.company', 'like', "%$searchTerm%")
                 ->orWhere('customers.job', 'like', "%$searchTerm%")
                 ->orWhere('emails.value', 'like', "%$searchTerm%")
                 ->orWhere('emails.key', 'like', "%$searchTerm%")
                 ->orWhere('phones.value', 'like', "%$searchTerm%")
                 ->orWhere('phones.key', 'like', "%$searchTerm%")
-                ->orWhere('adresses.value', 'like', "%$searchTerm%")
-                ->orWhere('adresses.key', 'like', "%$searchTerm%");
+                ->orWhere('descriptions.value', 'like', "%$searchTerm%")
+                ->orWhere('descriptions.key', 'like', "%$searchTerm%");
         })
-        ->groupBy('customers.id', 'customers.image', 'customers.name', 'customers.created_at', 'customers.country', 'customers.birth_day', 'customers.birth_place')
+        ->groupBy('customers.id', 'customers.name', 'customers.created_at', 'customers.country', 'customers.birth_day', 'customers.birth_place')
         ->orderBy('customers.id', 'desc')
         ->paginate(7);
 
@@ -290,16 +253,14 @@ public function searchCustomers(Request $request)
     public function exportCustomer(Request $request){
         $customerIds = $request->input('selectedCustomerIds');
 
+        // $customers = Customer::whereIn('id', $customerIds)->get(['id','name','birth_day','birth_place','country','state','city','job']);
+
+
         $fileName = 'customers-'.time() . '.xlsx';
+
+        return Excel::download(new CustomerExport($customerIds),$fileName, \Maatwebsite\Excel\Excel::XLSX);
     
-        return Excel::download(new CustomerExport($customerIds), $fileName,\Maatwebsite\Excel\Excel::XLSX);
+        // return Excel::download(new CustomerExport($customers), $fileName,\Maatwebsite\Excel\Excel::XLSX);
     }
 
-    public function downloadOneCustomer(){
-
-    }
-
-    public function downloadCustomers(){
-
-    }
 }

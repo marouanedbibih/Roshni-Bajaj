@@ -27,7 +27,6 @@ class AuthController extends Controller
         return response([
             'user'=> new AuthResource($user),
             'token'=> $token,
-            // 'message'=>'You have logged in successfully.'
         ]);
     }
 

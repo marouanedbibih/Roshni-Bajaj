@@ -26,27 +26,24 @@ class StoreCustomerRequest extends FormRequest
         return [
             'infos' => 'required|array',
             'infos.name' => 'required|string|max:255|unique:customers,name',
-            'infos.birth_day' => 'required|date',
-            'infos.birth_place' => 'required|string|max:255',
-            'infos.country' => 'required|string|max:255',
-            'infos.state' => 'required|string|max:255',
-            'infos.city' => 'required|string|max:255',
-            'infos.code_postal' => 'required|string|max:255',
-            'infos.company' => 'required|string|max:255',
-            'infos.job' => 'required|string|max:255',
-            'infos.image' => 'string',  // You may want to validate the image format and size here
+            'infos.birth_day' => 'nullable|date',
+            'infos.birth_place' => 'nullable|string|max:255',
+            'infos.country' => 'nullable|string|max:255',
+            'infos.state' => 'nullable|string|max:255',
+            'infos.city' => 'nullable|string|max:255',
+            'infos.job' => 'nullable|string|max:255',
     
             'emails' => 'required|array',
             'emails.*.key' => 'required|string|max:255',
-            'emails.*.value' => 'required|email|unique:emails,value',  // You can add email format validation
+            'emails.*.value' => 'required|email|unique:emails,value',  
     
             'phones' => 'required|array',
             'phones.*.key' => 'required|string|max:255',
-            'phones.*.value' => 'required|string|max:255|unique:phones,value',  // You can add phone number format validation
+            'phones.*.value' => 'required|string|max:255|unique:phones,value',  
     
-            'adresses' => 'required|array',
-            'adresses.*.key' => 'required|string|max:255',
-            'adresses.*.value' => 'required|string|unique:adresses,value',  // You may want to add address format validation
+            'descriptions' => 'nullable|array',
+            'descriptions.*.key' => 'nullable|string|max:255',
+            'descriptions.*.value' => 'nullable|string|',  
         ];
     
     }

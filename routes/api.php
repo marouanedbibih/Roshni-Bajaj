@@ -3,7 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Contact\AdresseController;
+use App\Http\Controllers\Contact\DescriptionController;
 use App\Http\Controllers\Contact\EmailController;
 use App\Http\Controllers\Contact\PhoneController;
 use Illuminate\Http\Request;
@@ -36,14 +36,14 @@ Route::middleware(['auth:sanctum', 'checkUserRole:1,2'])->group(function () {
     // Routes accessible for users with role 1 or 2
     Route::apiResource('/customer', CustomerController::class);
     Route::get('/getCustomerForMenu',[CustomerController::class,'getCustomerForMenu']);
+    Route::get('/search-customers', [CustomerController::class,'searchCustomers']);
 
-    Route::delete('/adresses/{adresse}', [AdresseController::class, 'destroy']);
+    Route::post('/customers/export', [CustomerController::class,'exportCustomer']);
+
+    Route::delete('/descriptions/{description}', [DescriptionController::class, 'destroy']);
     Route::delete('/emails/{email}', [EmailController::class, 'destroy']);
     Route::delete('/phones/{phone}', [PhoneController::class, 'destroy']);
-
     Route::delete('/customers/delete-selected', [CustomerController::class,'deleteCustomerSelected']);
-    Route::post('/customers/export', [CustomerController::class,'exportCustomer']);
-    Route::get('/search-customers', [CustomerController::class,'searchCustomers']);
 
 });
 Route::middleware(['auth:sanctum', 'checkUserRole:1'])->group(function () {

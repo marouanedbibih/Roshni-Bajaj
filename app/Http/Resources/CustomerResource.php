@@ -22,10 +22,7 @@ class CustomerResource extends JsonResource
             'country' => $this->country,
             'state' => $this->state,
             'city' => $this->city,
-            'code_postal' => $this->code_postal,
-            'company' => $this->company,
             'job' => $this->job,
-            'image' => $this->image,
         ];
     }
 }

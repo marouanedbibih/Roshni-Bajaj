@@ -6,9 +6,9 @@ use App\Models\Customer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Adresse>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Description>
  */
-class AdresseFactory extends Factory
+class DescriptionFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,11 +18,11 @@ class AdresseFactory extends Factory
     public function definition(): array
     {
         $customer = Customer::inRandomOrder()->first();
-
         return [
-            'key' => $this->faker->word(),
-            'value' => $this->faker->address(),
+            'key' => $this->faker->text(100),
+            'value' => $this->faker->text,
             'customer_id' => $customer->id,
+
         ];
     }
 }
