@@ -38,7 +38,6 @@ Route::middleware(['auth:sanctum', 'checkUserRole:1,2'])->group(function () {
     Route::get('/getCustomerForMenu',[CustomerController::class,'getCustomerForMenu']);
     Route::get('/search-customers', [CustomerController::class,'searchCustomers']);
 
-    Route::post('/customers/export', [CustomerController::class,'exportCustomer']);
 
     Route::delete('/descriptions/{description}', [DescriptionController::class, 'destroy']);
     Route::delete('/emails/{email}', [EmailController::class, 'destroy']);
@@ -50,6 +49,7 @@ Route::middleware(['auth:sanctum', 'checkUserRole:1'])->group(function () {
     Route::apiResource('/users',UserController::class);
 });
 
+Route::post('/customers/export', [CustomerController::class,'exportCustomer']);
 
 
 

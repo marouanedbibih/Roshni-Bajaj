@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exports\CustomerExport;
 use App\Http\Resources\CustomerResourceMenu;
 use Illuminate\Support\Facades\DB;
 
@@ -14,7 +15,6 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\CustomerExport;
 
 class CustomerController extends Controller
 {
@@ -250,17 +250,12 @@ public function searchCustomers(Request $request)
 }
 
 
-    public function exportCustomer(Request $request){
-        $customerIds = $request->input('selectedCustomerIds');
+public function exportCustomer(Request $request){
+    $customerIds = $request->input('selectedCustomerIds');
 
-        // $customers = Customer::whereIn('id', $customerIds)->get(['id','name','birth_day','birth_place','country','state','city','job']);
+    $fileName = 'customers-'.time() . '.xlsx';
 
-
-        $fileName = 'customers-'.time() . '.xlsx';
-
-        return Excel::download(new CustomerExport($customerIds),$fileName, \Maatwebsite\Excel\Excel::XLSX);
-    
-        // return Excel::download(new CustomerExport($customers), $fileName,\Maatwebsite\Excel\Excel::XLSX);
-    }
+    return Excel::download(new CustomerExport($customerIds), $fileName,\Maatwebsite\Excel\Excel::XLSX);
+}
 
 }
