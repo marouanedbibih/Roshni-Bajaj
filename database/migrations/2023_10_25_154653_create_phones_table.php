@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('phones', function (Blueprint $table) {
             $table->id();
-            $table->string('key', 100);
-            $table->string('value', 20); // Adjust the length as needed
+            $table->string('key', 100)->nullable();
+            $table->string('value', 20)->nullable(); // Adjust the length as needed
             $table->unsignedBigInteger('customer_id'); // Use unsignedBigInteger for foreign keys
             $table->timestamps();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');

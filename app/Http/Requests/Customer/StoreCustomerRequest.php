@@ -34,14 +34,14 @@ class StoreCustomerRequest extends FormRequest
             'infos.job' => 'nullable|string|max:255',
     
             'emails' => 'required|array',
-            'emails.*.key' => 'required|string|max:255',
-            'emails.*.value' => 'required|email|unique:emails,value',  
+            'emails.*.key' => 'nullable|string|max:255',
+            'emails.*.value' => 'nullable|email|unique:emails,value',  
     
             'phones' => 'required|array',
-            'phones.*.key' => 'required|string|max:255',
-            'phones.*.value' => 'required|string|max:255|unique:phones,value',  
+            'phones.*.key' => 'nullable|string|max:255',
+            'phones.*.value' => 'nullable|string|max:255|unique:phones,value',  
     
-            'descriptions' => 'nullable|array',
+            'descriptions' => 'required|array',
             'descriptions.*.key' => 'nullable|string|max:255',
             'descriptions.*.value' => 'nullable|string|',  
         ];

@@ -35,21 +35,23 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware(['auth:sanctum', 'checkUserRole:1,2'])->group(function () {
     // Routes accessible for users with role 1 or 2
     Route::apiResource('/customer', CustomerController::class);
+
     Route::get('/getCustomerForMenu',[CustomerController::class,'getCustomerForMenu']);
+    Route::get('/getIds',[CustomerController::class,'getIds']);
     Route::get('/search-customers', [CustomerController::class,'searchCustomers']);
 
+    Route::post('/customers/export', [CustomerController::class,'exportCustomer']);
 
     Route::delete('/descriptions/{description}', [DescriptionController::class, 'destroy']);
     Route::delete('/emails/{email}', [EmailController::class, 'destroy']);
     Route::delete('/phones/{phone}', [PhoneController::class, 'destroy']);
     Route::delete('/customers/delete-selected', [CustomerController::class,'deleteCustomerSelected']);
-
 });
+
 Route::middleware(['auth:sanctum', 'checkUserRole:1'])->group(function () {
     Route::apiResource('/users',UserController::class);
 });
 
-Route::post('/customers/export', [CustomerController::class,'exportCustomer']);
 
 
 

@@ -49,9 +49,10 @@ class UpdateCustomerRequest extends FormRequest
                 'array',
             ],
             'emails.*.id' => 'integer|nullable', // Ensure 'id' is an integer
-            'emails.*.key' => 'string|max:255',
+            'emails.*.key' => 'nullable|string|max:255',
             'emails.*.value' => [
                 'email',
+                'nullable',
                 new UpdateUniqueEmail($customerId, $this->input('emails.*.id'), $this->input('emails'))
             
             ],
@@ -60,9 +61,10 @@ class UpdateCustomerRequest extends FormRequest
                 'array',
             ],
             'phones.*.id' => 'integer|nullable', // Ensure 'id' is an integer
-            'phones.*.key' => 'string|max:255',
+            'phones.*.key' => 'nullable|string|max:255',
             'phones.*.value' => [
                 'string',
+                'nullable',
                 new UpdateUniqueEmail($customerId, $this->input('phones.*.id'), $this->input('phones'))
             
             ],
@@ -70,10 +72,11 @@ class UpdateCustomerRequest extends FormRequest
                 'nullable',
                 'array',
             ],
-            'descriptions.*.id' => 'integer|nullable', // Ensure 'id' is an integer
-            'descriptions.*.key' => 'string|max:255',
+            'descriptions.*.id' => '|integer|nullable', // Ensure 'id' is an integer
+            'descriptions.*.key' => 'nullable|string|max:255',
             'descriptions.*.value' => [
-                'string',            
+                'string',  
+                'nullable'          
             ],
         ];
     }

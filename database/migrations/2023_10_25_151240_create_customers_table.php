@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('name', 255);
             $table->date('birth_day')->nullable()->default(null);
             $table->string('birth_place')->nullable()->default(null);
-            $table->string('country', 255);
-            $table->string('state', 255);
-            $table->string('city', 255);
+            $table->string('country', 255)->nullable();
+            $table->string('state', 255)->nullable();
+            $table->string('city', 255)->nullable();
             $table->string('job')->nullable();
             $table->timestamps(); // Add this line
 

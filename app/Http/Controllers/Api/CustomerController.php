@@ -18,6 +18,25 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
+    public function getIds() {
+        $perPage = 7;
+        $customerIds = Customer::select('id')->orderBy('id', 'desc')->get();
+    
+        $totalIds = count($customerIds);
+        $paginationObject = [];
+    
+        for ($page = 1; $page <= ceil($totalIds / $perPage); $page++) {
+            $offset = ($page - 1) * $perPage;
+            $pageIds = array_slice($customerIds->pluck('id')->toArray(), $offset, $perPage);
+            $paginationObject[$page] = $pageIds;
+        }
+    
+        return response(['customerIds' => $paginationObject], 200);
+    }
+    
+    
+    
+    
     /**
      * Display a listing of the resource.
      */
@@ -131,20 +150,17 @@ class CustomerController extends Controller
                 $updatedPhones[] = $phone;
             }
         }
-    
-        // Update or create addresses
         $updatedDescriptions = [];
         foreach ($descriptionsData as $descriptionData) {
             if (isset($descriptionData['id'])) {
                 $description = $customer->descriptions()->find($descriptionData['id']);
                 if ($description) {
                     $description->update($descriptionData);
-                    $updatedAddresses[] = $description;
+                    $updatedDescriptions[] = $description;
                 }
-                else{
-                    $description = $customer->descriptions()->create($descriptionData);
-                    $updatedAdresses[] = $description;
-                }
+            } else {
+                $description = $customer->descriptions()->create($descriptionData);
+                $updatedDescriptions[] = $description;
             }
         }
     
@@ -172,10 +188,12 @@ class CustomerController extends Controller
     {
         $customers = DB::table('customers')
             ->leftJoin('emails', function ($join) {
-                $join->on('customers.id', '=', 'emails.customer_id');
+                $join->on('customers.id', '=', 'emails.customer_id')      
+                ->whereRaw('emails.created_at = (SELECT MIN(created_at) FROM emails WHERE customer_id = customers.id)');
             })
             ->leftJoin('phones', function ($join) {
-                $join->on('customers.id', '=', 'phones.customer_id');
+                $join->on('customers.id', '=', 'phones.customer_id')
+                ->whereRaw('phones.created_at = (SELECT MIN(created_at) FROM phones WHERE customer_id = customers.id)');
             })
             ->select(
                 'customers.id',
@@ -248,7 +266,6 @@ public function searchCustomers(Request $request)
 
     return CustomerResourceMenu::collection($customers);
 }
-
 
 public function exportCustomer(Request $request){
     $customerIds = $request->input('selectedCustomerIds');

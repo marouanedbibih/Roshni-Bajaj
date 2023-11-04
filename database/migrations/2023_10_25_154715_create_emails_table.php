@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('emails', function (Blueprint $table) {
             $table->id();
             $table->string('key', 100);
-            $table->string('value', 255); // Adjust the length as needed
-            $table->unsignedBigInteger('customer_id'); // Use unsignedBigInteger for foreign keys
+            $table->string('value', 255)->nullable(); // Adjust the length as needed
+            $table->unsignedBigInteger('customer_id')->nullable(); // Use unsignedBigInteger for foreign keys
             $table->timestamps();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
