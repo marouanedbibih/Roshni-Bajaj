@@ -2,7 +2,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axios.js";
 import { useStateContext } from "../../contexts/ContextProvider.jsx";
-import image from "../../../public/img/default-profile.png";
 
 export default function UserForm() {
   const navigate = useNavigate();
@@ -19,26 +18,7 @@ export default function UserForm() {
   });
   const [errors, setErrors] = useState(null);
   const { setNotification } = useStateContext();
-
   const [loading, setLoading] = useState(false);
-  const { displayNotification } = useStateContext();
-  const [profileImage, setProfileImage] = useState(null);
-
-  const onImageChoose = (ev) => {
-    const file = ev.target.files[0];
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      setUser({
-        ...user,
-        image: file,
-        image_url: reader.result,
-      });
-
-      ev.target.value = "";
-    };
-    reader.readAsDataURL(file);
-  };
 
   if (id) {
     useEffect(() => {
@@ -58,10 +38,6 @@ export default function UserForm() {
   const onSubmit = (ev) => {
     ev.preventDefault();
     const payload = { ...user };
-    if (payload.image) {
-      payload.image = payload.image_url;
-    }
-    delete payload.image_url;
     if (id) {
       axiosClient
         .put(`/users/${id}`, payload)
@@ -116,97 +92,56 @@ export default function UserForm() {
 
         {!loading && (
           <form onSubmit={onSubmit} className="grid grid-cols-1 gap-4 ">
-            <div className="grid grid-cols-2 gap-8">
-              <div className="grid grid-colms-1 gab-8 ">
-                <input
-                  value={user.last_name}
-                  onChange={(ev) =>
-                    setUser({ ...user, last_name: ev.target.value })
-                  }
-                  placeholder="Last Name"
-                  className="mb-4"
-                />
-                <input
-                  value={user.first_name}
-                  onChange={(ev) =>
-                    setUser({ ...user, first_name: ev.target.value })
-                  }
-                  placeholder="First Name"
-                  className="mb-4"
+            <div className="grid grid-colms-1 gab-8 ">
+              <input
+                value={user.last_name}
+                onChange={(ev) =>
+                  setUser({ ...user, last_name: ev.target.value })
+                }
+                placeholder="Last Name"
+                className="mb-4"
+              />
+              <input
+                value={user.first_name}
+                onChange={(ev) =>
+                  setUser({ ...user, first_name: ev.target.value })
+                }
+                placeholder="First Name"
+                className="mb-4"
+              />
+              <input
+                value={user.email}
+                onChange={(ev) => setUser({ ...user, email: ev.target.value })}
+                placeholder="Email"
+                className="mb-4"
+              />
+              <select
+                value={user.role}
+                onChange={(ev) => setUser({ ...user, role: ev.target.value })}
+                className="mb-4"
+              >
+                <option value="">Select Role</option>
+                <option value="1">Admin</option>
+                <option value="0">Resume</option>
+                <option value="2">Customer</option>
+              </select>
 
-                />
-                <input
-                  value={user.email}
-                  onChange={(ev) =>
-                    setUser({ ...user, email: ev.target.value })
-                  }
-                  placeholder="Email"
-                  className="mb-4"
-
-                />
-                <select
-                  value={user.role}
-                  onChange={(ev) => setUser({ ...user, role: ev.target.value })}
-                  className="mb-4"
-
-                >
-                  <option value="">Select Role</option>
-                  <option value="1">Admin</option>
-                  <option value="0">Resume</option>
-                  <option value="2">Customer</option>
-                </select>
-
-                <input
-                  type="password"
-                  onChange={(ev) =>
-                    setUser({ ...user, password: ev.target.value })
-                  }
-                  placeholder="Password"
-                  className="mb-4"
-
-                />
-                <input
-                  type="password"
-                  onChange={(ev) =>
-                    setUser({ ...user, password_confirmation: ev.target.value })
-                  }
-                  placeholder="Password Confirmation"
-                  className="mb-4"
-
-                />
-              </div>
-              <div className="flex justify-center items-center">
-                <label for="profile-image" class="file-input-label">
-                  <div class="file-input">
-                    <img
-                      src={
-                        user.image_url ||
-                        (id
-                          ? `${import.meta.env.VITE_API_BASE_URL}/${user.image}`
-                          : image)
-                      }
-                      alt="Profile Image"
-                      class="image-preview"
-                    />
-
-                    <input
-                      type="file"
-                      id="profile-image"
-                      class="hidden"
-                      accept="image/*"
-                      onChange={onImageChoose} // Call the function when the input changes
-                    />
-                    {user.image && (
-                      <button
-                        onClick={() => setUser({ ...user, image: "" })}
-                        class="delete-button"
-                      >
-                        <i class="fa fa-trash" aria-hidden="true"></i>
-                      </button>
-                    )}
-                  </div>
-                </label>
-              </div>
+              <input
+                type="password"
+                onChange={(ev) =>
+                  setUser({ ...user, password: ev.target.value })
+                }
+                placeholder="Password"
+                className="mb-4"
+              />
+              <input
+                type="password"
+                onChange={(ev) =>
+                  setUser({ ...user, password_confirmation: ev.target.value })
+                }
+                placeholder="Password Confirmation"
+                className="mb-4"
+              />
             </div>
             <div className="grid grid-cols-1 w-1/12">
               <button className="btn">Save</button>

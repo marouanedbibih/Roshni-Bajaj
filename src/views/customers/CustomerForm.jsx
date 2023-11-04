@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import image from "../../../public/img/default-profile.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
 import KeyValueInputForm from "../../components/Input/KeyValueInputForm";
@@ -21,11 +20,7 @@ function CustomerForm() {
       country: "",
       state: "",
       city: "",
-      code_postal: "",
-      company: "",
       job: "",
-      image: null,
-      image_url: null,
     },
     emails: [
       {
@@ -41,7 +36,7 @@ function CustomerForm() {
         value: "",
       },
     ],
-    adresses: [
+    descriptions: [
       {
         id: null,
         key: "home",
@@ -49,27 +44,8 @@ function CustomerForm() {
       },
     ],
   });
-  const [profileImage, setProfileImage] = useState(null);
 
   // React Functions
-  const onImageChoose = (ev) => {
-    const file = ev.target.files[0];
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      setCustomer((customer) => ({
-        ...customer,
-        infos: {
-          ...customer.infos,
-          image: file,
-          image_url: reader.result,
-        },
-      }));
-
-      ev.target.value = "";
-    };
-    reader.readAsDataURL(file);
-  };
   const clearErrors = () => {
     setErrors(null);
   };
@@ -131,7 +107,7 @@ function CustomerForm() {
 
   const addNewEmail = () => addNewData("emails");
   const addNewPhone = () => addNewData("phones");
-  const addNewAdresse = () => addNewData("adresses");
+  const addNewDescription = () => addNewData("descriptions");
 
   // API Functions
   if (id) {
@@ -142,7 +118,6 @@ function CustomerForm() {
         .then(({ data }) => {
           setLoading(false);
           setCustomer(data);
-          // console.log("Customer ", customer);
         })
         .catch(() => {
           setLoading(false);
@@ -153,10 +128,6 @@ function CustomerForm() {
   const onSubmit = (ev) => {
     ev.preventDefault();
     const payload = { ...customer };
-    if (payload.infos.image) {
-      payload.infos.image = payload.infos.image_url;
-    }
-    delete payload.infos.image_url;
     if (id) {
       console.log("Update Customer : ", payload);
       axiosClient
@@ -169,10 +140,12 @@ function CustomerForm() {
           const response = err.response;
           if (response && response.status === 422) {
             setErrors(response.data.errors);
+            setTimeout(clearErrors, 5000);
+
           }
         });
     } else {
-      // console.log("Payload:", payload);
+      console.log(payload)
       axiosClient
         .post("/customer", payload)
         .then((response) => {
@@ -225,40 +198,6 @@ function CustomerForm() {
           id="personnel-section"
           className="w-full flex flex-col justify-center items-center"
         >
-          <div className="mb-8" id="personnel-profile">
-            <label htmlFor="profile-image" className="file-input-label">
-              <div className="file-customer">
-                <img
-                  src={
-                    customer.infos.image_url ||
-                    (id
-                      ? `${import.meta.env.VITE_API_BASE_URL}/${
-                          customer.infos.image
-                        }`
-                      : image)
-                  }
-                  alt="Profile Image"
-                  className=""
-                />
-
-                <input
-                  type="file"
-                  id="profile-image"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={onImageChoose}
-                />
-                {/* {user.image && (
-                  <button
-                    onClick={() => setUser({ ...user, image: "" })}
-                    className="delete-button"
-                  >
-                    <i className="fa fa-trash" aria-hidden="true"></i>
-                  </button>
-                )} */}
-              </div>
-            </label>
-          </div>
           <div
             className="w-full ml-4 grid grid-cols-1 justify-items-center content-center"
             id="personnel-inputs "
@@ -338,30 +277,6 @@ function CustomerForm() {
                 placeholder="City"
               />
               <input
-                value={customer.infos.code_postal}
-                onChange={(ev) =>
-                  setCustomer({
-                    ...customer,
-                    infos: { ...customer.infos, code_postal: ev.target.value },
-                  })
-                }
-                type="text"
-                className="outline-none bg-white w-full border-2 border-gray-300 mb-15 px-15 py-15 box-border text-14 transition duration-300 rounded-16 focus:border-purple-600"
-                placeholder="Code Postal"
-              />
-              <input
-                value={customer.infos.company}
-                onChange={(ev) =>
-                  setCustomer({
-                    ...customer,
-                    infos: { ...customer.infos, company: ev.target.value },
-                  })
-                }
-                type="text"
-                className="outline-none bg-white w-full border-2 border-gray-300 mb-15 px-15 py-15 box-border text-14 transition duration-300 rounded-16 focus:border-purple-600"
-                placeholder="Company"
-              />
-              <input
                 value={customer.infos.job}
                 onChange={(ev) =>
                   setCustomer({
@@ -393,6 +308,7 @@ function CustomerForm() {
                   keyLabel="Email Key"
                   valueLabel="Email Value"
                   index={index}
+                  type={"email"}
                 />
               ))}
 
@@ -422,6 +338,7 @@ function CustomerForm() {
                   keyLabel="Phone Key"
                   valueLabel="Phone Value"
                   index={index}
+                  type={"text"}
                 />
               ))}
 
@@ -434,30 +351,31 @@ function CustomerForm() {
               </button>
             </div>
 
-            {/* Customer Adresses */}
+            {/* Customer Descriptions */}
             <div className="w-full h-auto p-4 flex-col justify-start items-start gap-4 inline-flex">
               <div className="text-black text-[32px] font-bold font-['Roboto'] leading-[41.60px]">
-                Adresses
+                Description
               </div>
-              {customer.adresses.map((adresse, index) => (
+              {customer.descriptions.map((description, index) => (
                 <KeyValueInputForm
-                  data={adresse}
-                  updateDataKey={(newAdresseKey) =>
-                    updateDataKey(index, newAdresseKey, "adresses")
+                  data={description}
+                  updateDataKey={(newDescriptionKey) =>
+                    updateDataKey(index, newDescriptionKey, "descriptions")
                   }
-                  updateDataValue={(newAdresseValue) =>
-                    updateDataValue(index, newAdresseValue, "adresses")
+                  updateDataValue={(newDescriptionValue) =>
+                    updateDataValue(index, newDescriptionValue, "descriptions")
                   }
-                  removeData={() => removeData(index, "adresses")}
-                  keyLabel="Adresse Key"
-                  valueLabel="Adresse Value"
+                  removeData={() => removeData(index, "descriptions")}
+                  keyLabel="Title"
+                  valueLabel="Description"
                   index={index}
+                  textarea={true} 
                 />
               ))}
 
               <button
                 type="button"
-                onClick={addNewAdresse}
+                onClick={addNewDescription}
                 className="w-9 h-9 px-3.5 py-2 bg-violet-800 rounded-[100px] shadow justify-center items-center gap-2 inline-flex"
               >
                 <AiOutlinePlus color="white" size={32} />

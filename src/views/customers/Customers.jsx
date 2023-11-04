@@ -13,11 +13,12 @@ function Customers() {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const carouselPages = 5; // Define the number of pages to display in
+  const carouselPages = 5; 
   const [selectedCustomers, setSelectedCustomers] = useState({
     [currentPage]: [],
   });
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -26,6 +27,7 @@ function Customers() {
       loadSearchResults(1, searchTerm);
     }
   }, [currentPage, searchTerm]);
+
   const getCustomers = (page) => {
     setLoading(true);
     axiosClient
@@ -52,10 +54,6 @@ function Customers() {
       .catch(() => {
         setLoading(false);
       });
-  };
-  const onSearchClick = () => {
-    setCurrentPage(1); // Reset the current page to 1 when searching
-    loadSearchResults(1, searchTerm); // Load search results for the first page
   };
 
   const onDeleteClick = (id) => {
@@ -146,7 +144,8 @@ function Customers() {
       .then(() => {
         setNotification("Selected customers were successfully deleted");
         getCustomers(currentPage);
-        setSelectedCustomers([]); // Clear selected customers after deletion
+        setSelectedCustomers([]); 
+        setSelectAll(false);
       })
       .catch((error) => {
         console.error(error);
@@ -155,6 +154,7 @@ function Customers() {
 
   const exportCustomers = () => {
     // Send an API request to export customers
+    console.log(selectedCustomers)
     axiosClient
       .post(
         "/customers/export",
@@ -196,30 +196,54 @@ function Customers() {
       });
   };
 
+
+  const toggleSelectAll = () => {
+    setSelectAll(!selectAll);
+  
+    axiosClient.get('/getIds')
+      .then(({ data }) => {
+        // Assuming 'data' is the response with page numbers as keys and IDs as arrays
+        const selectedCustomersCopy = { ...selectedCustomers };
+        
+        for (const page in data.customerIds) {
+          const pageIds = data.customerIds[page];
+          
+          if (selectAll) {
+            // If 'selectAll' is true, deselect all customers on this page
+            selectedCustomersCopy[page] = [];
+          } else {
+            // If 'selectAll' is false, select all customers on this page
+            selectedCustomersCopy[page] = pageIds;
+          }
+        }
+        
+        setSelectedCustomers(selectedCustomersCopy);
+      })
+      .catch((error) => {
+        // Handle any errors that may occur during the Axios request
+        console.error(error);
+      });
+  };
+  
+  
+
+console.log(selectedCustomers);
   return (
-    <div>
+    <div className="">
       {/* Customers Header */}
       <div className="w-full h-20  justify-between items-center inline-flex">
         <div className="text-black text-5xl font-bold font-['Roboto'] leading-[62.40px]">
           Customers
         </div>
         <div className="flex justify-center items-center">
-          <Link
-            to="create"
-            className="w-[81px] px-3.5 py-2 bg-emerald-600 rounded-lg shadow justify-center items-center gap-2 flex mr-4"
-          >
-            <div className="text-white text-xs font-bold font-['Roboto'] uppercase leading-[18px]">
-              Add new
-            </div>
-          </Link>
-          {/* <button
+        <button
+            onClick={toggleSelectAll}
             className="w-auto px-3.5 py-2 bg-orange-500 rounded-lg shadow justify-center items-center gap-2 flex mr-4"
-            onClick={() => toggleSelectAllOnPage(currentPage)}
           >
             <div className="text-white text-xs font-bold font-['Roboto'] uppercase leading-[18px]">
-              Select Page
+              {selectAll ? "Deselect All" : "Select All"}
             </div>
-          </button> */}
+          </button>
           <button
             onClick={deleteSelectedCustomers}
             className="w-auto px-3.5 py-2 bg-red-500 rounded-lg shadow justify-center items-center gap-2 flex mr-4"
@@ -230,12 +254,20 @@ function Customers() {
           </button>
           <button
             onClick={exportCustomers}
-            className="w-auto px-3.5 py-2 bg-sky-900 rounded-lg shadow justify-center items-center gap-2 flex"
+            className="w-auto px-3.5 py-2 bg-sky-900 rounded-lg shadow justify-center items-center gap-2 flex mr-4"
           >
             <div className="text-white text-xs font-bold font-['Roboto'] uppercase leading-[18px]">
               Export
             </div>
           </button>
+          <Link
+            to="create"
+            className="w-[81px] px-3.5 py-2 bg-emerald-600 rounded-lg shadow justify-center items-center gap-2 flex"
+          >
+            <div className="text-white text-xs font-bold font-['Roboto'] uppercase leading-[18px]">
+              Add new
+            </div>
+          </Link>
         </div>
       </div>
       {/* Customers Bar */}
@@ -251,17 +283,16 @@ function Customers() {
       </form>
 
       {/* Customers List */}
-
       <div
         className="grid grid-cols-1 justify-items-center mb-8"
         id="user-list"
       >
         {/* Customers Table */}
-        <div className="card bg-white rounded shadow p-6 mb-6 mt-3 animated fadeInDown">
+        <div className="bg-white rounded-md shadow-md p-5 mb-4 mt-2 animated fadeInDown">
           <table className="w-full">
             <thead className="bg-gray-300">
               <tr>
-                <th className="px-4 py-2 flex items-center">
+                <th className="px-4 py-2 flex items-center text-left lg:text-sm bg-gray-300">
                   <input
                     type="checkbox"
                     key={currentPage}
@@ -274,12 +305,12 @@ function Customers() {
                     }
                     onChange={() => toggleSelectAllOnPage(currentPage)}
                   />
-                  Customer
+                  Name
                 </th>
-                <th className="px-4 py-2">Country</th>
-                <th className="px-4 py-2">Birth</th>
-                <th className="px-4 py-2">Contact</th>
-                <th className="px-4 py-2">Actions</th>
+                <th className="px-4 py-2 text-left lg:text-sm bg-gray-300">Country</th>
+                <th className="px-4 py-2 text-left lg:text-sm bg-gray-300">Birth</th>
+                <th className="px-4 py-2 text-left lg:text-sm bg-gray-300">Contact</th>
+                <th className="px-4 py-2 text-left lg:text-sm bg-gray-300">Actions</th>
               </tr>
             </thead>
             {loading && (
@@ -310,32 +341,25 @@ function Customers() {
                               toggleSelectCustomer(currentPage, c.id)
                             }
                           />
-                          <img
-                            className="w-10 h-10 rounded-[24px] mr-3"
-                            src={`${import.meta.env.VITE_API_BASE_URL}/${
-                              c.image
-                            }`}
-                            alt={``}
-                          />
-                          <div className="">
-                            <p>{c.name}</p>
+                          <div className="whitespace-normal">
+                            <p className="lg:text-sm">{c.name}</p>
                             <p className="text-zinc-400 text-[12px] font-bold font-['Roboto'] leading-[14px]">
                               {c.created_at}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td>
+                      <td className="whitespace-normal">
                         <p>{c.country}</p>
                       </td>
                       <td className="flex items-center">
-                        <p className="mr-4">{c.birth_day}</p>
-                        <p>{c.birth_place}</p>
+                        <p className="mr-4 lg:text-sm">{c.birth_day}</p>
+                        <p className="lg:text-sm">{c.birth_place}</p>
                       </td>
 
                       <td className="">
-                        <p className="">{c.email}</p>
-                        <p>{c.phone}</p>
+                        <p className="lg:text-sm">{c.email}</p>
+                        <p className="lg:text-sm">{c.phone}</p>
                       </td>
 
                       <td className="flex items-center">

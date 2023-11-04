@@ -73,7 +73,7 @@ function Users() {
           <table className="w-full">
             <thead className="bg-gray-300">
               <tr>
-                <th className="px-4 py-2">Image</th>
+                <th className="px-4 py-2">ID</th>
                 <th className="px-4 py-2">Name</th>
                 <th className="px-4 py-2">Email</th>
                 <th className="px-4 py-2">Create Date</th>
@@ -95,11 +95,7 @@ function Users() {
                   users.map((u) => (
                     <tr key={u.id} className="">
                       <td>
-                        <img
-                          className="w-10 h-10 rounded-[24px]"
-                          src={`${import.meta.env.VITE_API_BASE_URL}/${u.image}`}
-                          alt={`${u.last_name} ${u.first_name}`}
-                        />
+                        {u.id}
                       </td>
                       <td>
                         {u.last_name} {u.first_name}

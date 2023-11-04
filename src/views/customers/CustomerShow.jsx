@@ -8,10 +8,9 @@ function CustomerShow() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [customer, setCustomer] = useState({});
-  const [infos, setInfos] = useState({});
   const [emails, setEmails] = useState([]);
   const [phones, setPhones] = useState([]);
-  const [adresses, setAdresses] = useState([]);
+  const [descriptions, setDescriptions] = useState([]);
   const { setNotification } = useStateContext();
 
   useEffect(() => {
@@ -29,12 +28,7 @@ function CustomerShow() {
         setCustomer(data.infos);
         setEmails(data.emails);
         setPhones(data.phones);
-        setAdresses(data.adresses);
-        console.log("Data :", data);
-        // console.log("infos :" , infos);
-        // console.log("emails :" , emails);
-        // console.log("phones :" , phones);
-        // console.log("adresses :" , adresses);
+        setDescriptions(data.descriptions);
       })
       .catch(() => {
         setLoading(false);
@@ -67,11 +61,6 @@ function CustomerShow() {
       {/* Customer View */}
       <div className="w-3/4 h-auto p-6 bg-white rounded-2xl shadow flex-col justify-center items-center gap-4 inline-flex">
         <div className="w-full justify-between items-center inline-flex">
-          <img
-            className="w-40 h-40 relative rounded-[100px]"
-            src={`${import.meta.env.VITE_API_BASE_URL}/${customer.image}`}
-            alt={``}
-          />
           <div className="h-9 justify-end items-center gap-4 flex">
             <div className="w-[73px] px-3.5 py-2 bg-emerald-600 rounded-lg shadow justify-center items-center gap-2 flex">
               <Link
@@ -96,7 +85,7 @@ function CustomerShow() {
             <div className="text-black text-[28px] font-bold font-['Roboto'] leading-9">
               {customer.name}
             </div>
-            <div className="h-[158px] py-2 border-b border-zinc-400 flex-col justify-start items-start gap-2 flex">
+            <div className="h-max py-2 border-b border-zinc-400 flex-col justify-start items-start gap-2 flex">
               <div className="text-black text-xl font-bold font-['Roboto'] leading-relaxed">
                 Location:
               </div>
@@ -109,22 +98,16 @@ function CustomerShow() {
               <div className="text-zinc-400 text-base font-bold font-['Roboto'] leading-tight">
                 City: {customer.city}
               </div>
-              <div className="text-zinc-400 text-base font-bold font-['Roboto'] leading-tight">
-                Code Postal: {customer.code_postal}
-              </div>
             </div>
-            <div className="h-[100px] py-2 border-b border-zinc-400 flex-col justify-start items-start gap-2 flex">
+            <div className="h-max py-2 border-b border-zinc-400 flex-col justify-start items-start gap-2 flex">
               <div className="text-black text-xl font-bold font-['Roboto'] leading-relaxed">
                 Profissionel
-              </div>
-              <div className="text-zinc-400 text-base font-bold font-['Roboto'] leading-tight">
-                Company : {customer.company}
               </div>
               <div className="text-zinc-400 text-base font-bold font-['Roboto'] leading-tight">
                 Job: {customer.job}
               </div>
             </div>
-            <div className="h-[121px] py-2 flex-col justify-start items-start gap-2 flex">
+            <div className="h-max py-2 flex-col justify-start items-start gap-2 flex">
               <div className="text-black text-xl font-bold font-['Roboto'] leading-relaxed">
                 Birth
               </div>
@@ -137,7 +120,7 @@ function CustomerShow() {
             </div>
           </div>
           <div className="w-[505px] flex-col justify-start items-start gap-8 inline-flex">
-            <div className="h-[332px] flex-col justify-start items-start gap-4 flex">
+            <div className="h-max flex-col justify-start items-start gap-4 flex">
               <div className="h-auto py-2 border-b border-zinc-400 flex-col justify-start items-start gap-2 flex">
                 <div className="text-black text-xl font-bold font-['Roboto'] leading-relaxed">
                   Emails
@@ -160,11 +143,13 @@ function CustomerShow() {
               </div>
               <div className="h-auto py-2 border-b border-zinc-400 flex-col justify-start items-start gap-2 flex">
                 <div className="text-black text-xl font-bold font-['Roboto'] leading-relaxed">
-                  Adresse
+                  Descriptions
                 </div>
-                {adresses.map((a) => (
+                {descriptions.map((a) => (
                   <div className="text-zinc-400 text-base font-bold font-['Roboto'] leading-tight">
-                    {a.key}: {a.value}
+                    <h4 className="text-lg font-extrabold text-black">{a.key}</h4>
+                    <p>{a.value}</p>
+                    
                   </div>
                 ))}
               </div>

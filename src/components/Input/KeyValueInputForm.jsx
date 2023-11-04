@@ -3,17 +3,15 @@ import { AiFillDelete } from "react-icons/ai";
 
 function KeyValueInputForm({
   data,
-  // updateDataId,
   updateDataKey,
   updateDataValue,
   removeData,
   index,
   keyLabel,
   valueLabel,
+  type,
+  textarea, // Add a prop to indicate whether to use a textarea
 }) {
-
-  // updateDataId(data.id);
-
   const handleKeyChange = (ev) => {
     updateDataKey(ev.target.value);
   };
@@ -30,9 +28,9 @@ function KeyValueInputForm({
             {keyLabel}
           </div>
           <input
+            type="text"
             value={data.key}
             onChange={handleKeyChange}
-            type="text"
             className="outline-none bg-white w-full border-2 border-gray-300 mb-15 px-15 py-15 box-border text-14 transition duration-300 rounded-16 focus-border-purple-600"
             placeholder={keyLabel}
           />
@@ -45,13 +43,23 @@ function KeyValueInputForm({
             {valueLabel}
           </div>
           <div className="w-full flex justify-center items-center">
-            <input
-              value={data.value}
-              onChange={handleValueChange}
-              type="text"
-              className="outline-none bg-white w-full border-2 border-gray-300 mb-0 mr-4 px-15 py-15 box-border text-14 transition duration-300 rounded-16 focus-border-purple-600"
-              placeholder={valueLabel}
-            />
+            {textarea ? ( // Conditionally render textarea or input
+              <textarea
+                value={data.value}
+                onChange={handleValueChange}
+                className="outline-none bg-white w-full border-2 border-gray-300 mb-0 mr-4 px-15 py-15 box-border text-14 transition duration-300 rounded-16 focus-border-purple-600"
+                placeholder={valueLabel}
+                rows={4}
+              />
+            ) : (
+              <input
+                value={data.value}
+                onChange={handleValueChange}
+                className="outline-none bg-white w-full border-2 border-gray-300 mb-0 mr-4 px-15 py-15 box-border text-14 transition duration-300 rounded-16 focus-border-purple-600"
+                placeholder={valueLabel}
+                type={type}
+              />
+            )}
             {index > 0 && (
               <button
                 onClick={() => removeData(index)}

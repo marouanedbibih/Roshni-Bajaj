@@ -4,7 +4,6 @@ import { useStateContext } from "../../contexts/ContextProvider.jsx";
 
 function Navbar() {
   const { setUser, user, _setToken, _setRole } = useStateContext();
-  const [notification,setNotification] = useState("Hello");
 
   useEffect(() => {
     axiosClient.get("/user").then(({ data }) => {
@@ -26,10 +25,6 @@ function Navbar() {
     <header className="h-20 px-16 bg-white shadow-md flex justify-end items-center">
       <div className="flex items-center gap-8">
         <div className="flex items-center justify-between gap-4">
-          <img
-            className="w-10 h-10 rounded-[40px]"
-            src={`${import.meta.env.VITE_API_BASE_URL}/${user.image}`}
-          />
           <div className="flex flex-col justify-center items-start gap-1">
             <div className="text-neutral-800 text-sm font-bold font-['Roboto'] leading-[18.20px]">
               {`${user.last_name} ${user.first_name}`}
@@ -48,7 +43,6 @@ function Navbar() {
           </div>
         </button>
       </div>
-      {/* {notification && <div className="notification">{notification}</div>} */}
     </header>
   );
 }
