@@ -2,7 +2,6 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 // Layouts
 import GuestLayout from "../layouts/GuestLayout";
 import AdminLayout from "../layouts/AdminLayout";
-import SecretaryLayout from "../layouts/SecretaryLayout";
 import Login from "../views/auth/Login";
 import UserForm from "../views/users/UserForm";
 import CustomerForm from "../views/customers/CustomerForm";
@@ -15,6 +14,7 @@ import Template3 from "../views/resume/template/Template3";
 import Users from "../views/users/Users";
 import CustomerLayout from "../layouts/CustomerLayout";
 import Customers from "../views/customers/Customers";
+import ResumeLayout from "../layouts/ResumeLayout";
 
 const routes = createBrowserRouter([
   {
@@ -34,28 +34,11 @@ const routes = createBrowserRouter([
         path: "/users/update/:id",
         element: <UserForm key="userUpdate" />,
       },
-      // // Customer Pages
-      // {
-      //   path: "/customers",
-      //   element: <Cutomers />,
-      // },
-      // {
-      //   path: "/customers/create",
-      //   element: <CustomerForm key="customerCreate" />,
-      // },
-      // {
-      //   path: "/customers/update/:id",
-      //   element: <CustomerForm key="customerUpdate" />,
-      // },
-      // {
-      //   path: "/customers/:id",
-      //   element: <CustomerShow />,
-      // },
     ],
   },
   {
     path: "/",
-    element: <SecretaryLayout />,
+    element: <ResumeLayout />,
     children: [
       {
         path: "/resume",
