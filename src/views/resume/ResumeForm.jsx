@@ -5,7 +5,8 @@ import ImageUpload from "../../components/Resume/ImageUpload";
 import { AiFillDelete, AiOutlinePlus } from "react-icons/ai";
 
 function ResumeForm() {
-  const { infos, setInfos, subFields, setSubFields, images, setImages } = useResumeContext();
+  const { infos, setInfos, subFields, setSubFields, images, setImages } =
+    useResumeContext();
 
   const addSubField = () => {
     const newSubField = {
@@ -80,17 +81,26 @@ function ResumeForm() {
           Resume
         </div>
         <div className="flex gap-4">
-          <Link to="/template/1" className="w-auto px-3.5 py-2 bg-emerald-600 rounded-md justify-center items-center gap-2 flex">
+          <Link
+            to="/template/1"
+            className="w-auto px-3.5 py-2 bg-emerald-600 rounded-md justify-center items-center gap-2 flex"
+          >
             <div className="text-white text-xs font-bold font-['Roboto'] uppercase leading-[18px]">
               Template 1
             </div>
           </Link>
-          <Link to="/template/2" className="w-auto px-3.5 py-2 bg-gray-700 rounded-md justify-center items-center gap-2 flex">
+          <Link
+            to="/template/2"
+            className="w-auto px-3.5 py-2 bg-gray-700 rounded-md justify-center items-center gap-2 flex"
+          >
             <div className="text-white text-xs font-bold font-['Roboto'] uppercase leading-[18px]">
               Template 2
             </div>
           </Link>
-          <Link to="/template/3" className="w-auto px-3.5 py-2 bg-orange-600 rounded-md justify-center items-center gap-2 flex">
+          <Link
+            to="/template/3"
+            className="w-auto px-3.5 py-2 bg-orange-600 rounded-md justify-center items-center gap-2 flex"
+          >
             <div className="text-white text-xs font-bold font-['Roboto'] uppercase leading-[18px]">
               Template 3
             </div>
@@ -102,8 +112,16 @@ function ResumeForm() {
           Pictures
         </div>
         <div className="w-full justify-center items-center gap-32 inline-flex">
-          <ImageUpload imageKey="image_1" images={images} onImageChoose={onImageChoose} />
-          <ImageUpload imageKey="image_2" images={images} onImageChoose={onImageChoose} />
+          <ImageUpload
+            imageKey="image_1"
+            images={images}
+            onImageChoose={(ev) => onImageChoose(ev, "image_1")}
+          />
+          <ImageUpload
+            imageKey="image_2"
+            images={images}
+            onImageChoose={(ev) => onImageChoose(ev, "image_2")}
+          />
         </div>
         <div className="w-full grid grid-cols-2 gap-8" id="row-inputs-1">
           {Object.entries(infos).map(([field, value]) => (
@@ -189,19 +207,19 @@ function ResumeForm() {
                     </div>
                   ))}
                   <button
-                    className="w-9 h-9 px-3.5 py-2 bg-violet-800 rounded-[100px] shadow justify-center items-center gap-2 inline-flex"
+                    className="w-auto h-auto px-3.5 py-2 bg-violet-800 mb-4 rounded-md text-white shadow justify-center items-center gap-2 inline-flex"
                     onClick={() => addKeyValue(subFieldIndex)}
                   >
-                    <AiOutlinePlus color="white" size={32} />
+                    Add Field with key & value 
                   </button>
                 </div>
               </div>
             ))}
             <button
-              className="w-9 h-9 px-3.5 py-2 bg-emerald-600 rounded-[100px] shadow justify-center items-center gap-2 inline-flex"
+              className="w-auto h-auto px-3.5 py-2 bg-emerald-600 text-white rounded-md shadow justify-center items-center gap-2 inline-flex"
               onClick={addSubField}
             >
-              <AiOutlinePlus color="white" size={32} />
+              Add Sub Field
             </button>
           </div>
         </div>

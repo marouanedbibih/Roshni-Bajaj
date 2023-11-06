@@ -21,7 +21,7 @@ const ResumeContext = createContext({
   subFields: [
     {
       subFieldName: "home",
-      fields: [{ key: "Key1 update from context", value: "Value1" }],
+      fields: [{ key: "Key", value: "Value" }],
     },
   ],
   setSubFields: () => {},
@@ -52,7 +52,7 @@ export default function ResumeProvider({ children }) {
   const [subFields, setSubFields] = useState([
     {
       subFieldName: "home",
-      fields: [{ key: "Key1 update from context", value: "Value1" }],
+      fields: [{ key: "Key1 ", value: "Value1" }],
     },
   ]);
 
