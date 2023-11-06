@@ -2,7 +2,11 @@ import React from 'react'
 
 function Test() {
   return (
-    <div>Test</div>
+    <div>
+      <h1>Test 1</h1>
+      <h1>Test 1</h1>
+      <h1>Test 1</h1>
+    </div>
   )
 }
 
