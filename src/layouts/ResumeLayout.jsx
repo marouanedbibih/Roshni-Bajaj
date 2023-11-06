@@ -13,7 +13,7 @@ function ResumeLayout() {
     return <Navigate to="/login" />;
   }
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-light">
       <Sidebar />
       <div className="flex-1">
         <Navbar />

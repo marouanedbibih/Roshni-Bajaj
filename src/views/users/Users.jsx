@@ -56,9 +56,10 @@ function Users() {
         <div className="text-black text-5xl font-bold font-['Roboto'] leading-[62.40px]">
           Users
         </div>
-        <Link 
-        to="create"
-        className="w-[81px] px-3.5 py-2 bg-emerald-600 rounded-lg shadow justify-center items-center gap-2 flex">
+        <Link
+          to="create"
+          className="w-[81px] px-3.5 py-2 bg-emerald-600 rounded-lg shadow justify-center items-center gap-2 flex"
+        >
           <div className="text-white text-xs font-bold font-['Roboto'] uppercase leading-[18px]">
             Add new
           </div>
@@ -92,10 +93,10 @@ function Users() {
             {!loading && (
               <tbody>
                 {!loading &&
-                  users.map((u) => (
+                  users.map((u, index) => (
                     <tr key={u.id} className="">
                       <td>
-                        {u.id}
+                        {index + 1} {/* Display the index (position) */}
                       </td>
                       <td>
                         {u.last_name} {u.first_name}
@@ -103,8 +104,6 @@ function Users() {
                       <td>{u.email}</td>
                       <td>{u.created_at}</td>
                       <td className="flex items-center">
-
-
                         <Link
                           to={"/users/update/" + u.id}
                           className="w-auto px-3.5 py-2 mr-2 bg-purple rounded-lg shadow justify-center items-center gap-2 flex"

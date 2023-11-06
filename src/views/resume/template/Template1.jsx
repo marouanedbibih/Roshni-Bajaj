@@ -39,7 +39,9 @@ function Template1() {
 
 
   return (
-    <div className=" flex flex-col justify-center items-center p-">
+
+    
+    <div className=" flex flex-col justify-center items-center bg-light">
       <div className="w-full h-32 justify-between items-center inline-flex">
         <div className="text-black text-5xl font-bold font-['Roboto'] leading-[62.40px]">
           Template 1
